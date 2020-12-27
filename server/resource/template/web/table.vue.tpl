@@ -232,7 +232,7 @@ export default {
         }
       },
     async update{{.StructName}}(row) {
-      const res = await find{{.StructName}}({ ID: row.ID });
+      const res = await find{{.StructName}}({ id: row.ID });
       this.type = "update";
       if (res.code == 0) {
         this.formData = res.data.re{{.Abbreviation}};
