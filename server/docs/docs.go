@@ -19,7 +19,6 @@ var doc = `{
         "description": "{{.Description}}",
         "title": "{{.Title}}",
         "contact": {},
-        "license": {},
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
@@ -220,7 +219,7 @@ var doc = `{
                 "tags": [
                     "SysApi"
                 ],
-                "summary": "创建基础api",
+                "summary": "更新基础api",
                 "parameters": [
                     {
                         "description": "api路径, api中文描述, api组, 方法",
@@ -487,6 +486,17 @@ var doc = `{
                     "AutoCode"
                 ],
                 "summary": "自动代码模板",
+                "parameters": [
+                    {
+                        "description": "创建自动代码",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.AutoCodeStruct"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "{\"success\":true,\"data\":{},\"msg\":\"创建成功\"}",
@@ -1582,6 +1592,15 @@ var doc = `{
                     "SimpleUploader"
                 ],
                 "summary": "断点续传插件版示例",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "断点续传插件版示例",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "{\"success\":true,\"data\":{},\"msg\":\"切片创建成功\"}",
@@ -1996,7 +2015,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.SysOperationRecord"
+                            "$ref": "#/definitions/request.SysOperationRecordCreate"
                         }
                     }
                 ],
@@ -2034,7 +2053,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.SysOperationRecord"
+                            "$ref": "#/definitions/request.GetByIdUint"
                         }
                     }
                 ],
@@ -2105,13 +2124,9 @@ var doc = `{
                 "summary": "用id查询SysOperationRecord",
                 "parameters": [
                     {
-                        "description": "Id",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.SysOperationRecord"
-                        }
+                        "type": "integer",
+                        "name": "ID",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -2143,13 +2158,79 @@ var doc = `{
                 "summary": "分页获取SysOperationRecord列表",
                 "parameters": [
                     {
-                        "description": "页码, 每页大小, 搜索条件",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request.SysOperationRecordSearch"
-                        }
+                        "type": "string",
+                        "name": "agent",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "body",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "createdAt",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "error_message",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "ip",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "latency",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "method",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "path",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "resp",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "updatedAt",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "user_id",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -2497,29 +2578,411 @@ var doc = `{
                 }
             }
         },
-        "/workflow/createWorkFlow": {
+        "/workflowProcess/completeWorkflowMove": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "workflow"
+                    "WorkflowProcess"
                 ],
-                "summary": "注册工作流",
+                "summary": "提交工作流",
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"获取成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/workflowProcess/createWorkflowProcess": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "WorkflowProcess"
+                ],
+                "summary": "创建WorkflowProcess",
                 "parameters": [
                     {
-                        "description": "注册工作流接口",
+                        "description": "创建WorkflowProcess",
                         "name": "data",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.SysWorkflow"
+                            "$ref": "#/definitions/model.WorkflowProcess"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"success\":true,\"data\":{},\"msg\":\"注册成功\"}",
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"获取成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/workflowProcess/deleteWorkflowProcess": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "WorkflowProcess"
+                ],
+                "summary": "删除WorkflowProcess",
+                "parameters": [
+                    {
+                        "description": "删除WorkflowProcess",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.WorkflowProcess"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"删除成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/workflowProcess/deleteWorkflowProcessByIds": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "WorkflowProcess"
+                ],
+                "summary": "批量删除WorkflowProcess",
+                "parameters": [
+                    {
+                        "description": "批量删除WorkflowProcess",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.IdsReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"删除成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/workflowProcess/findWorkflowProcess": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "WorkflowProcess"
+                ],
+                "summary": "用id查询WorkflowProcess",
+                "parameters": [
+                    {
+                        "description": "用id查询WorkflowProcess",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.WorkflowProcess"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"查询成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/workflowProcess/findWorkflowStep": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "WorkflowProcess"
+                ],
+                "summary": "用id查询工作流步骤",
+                "parameters": [
+                    {
+                        "description": "用id查询WorkflowProcess",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.WorkflowProcess"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"查询成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/workflowProcess/getMyNeed": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "WorkflowProcess"
+                ],
+                "summary": "我的待办",
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"获取成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/workflowProcess/getMyStated": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "WorkflowProcess"
+                ],
+                "summary": "我发起的工作流",
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"获取成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/workflowProcess/getWorkflowMoveByID": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "WorkflowProcess"
+                ],
+                "summary": "根据id获取当前节点详情和历史",
+                "parameters": [
+                    {
+                        "description": "根据id获取当前节点详情和过往",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.GetById"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"获取成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/workflowProcess/getWorkflowProcessList": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "WorkflowProcess"
+                ],
+                "summary": "分页获取WorkflowProcess列表",
+                "parameters": [
+                    {
+                        "description": "分页获取WorkflowProcess列表",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.WorkflowProcessSearch"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"获取成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/workflowProcess/startWorkflow": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "WorkflowProcess"
+                ],
+                "summary": "开启工作流",
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"获取成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/workflowProcess/updateWorkflowProcess": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "WorkflowProcess"
+                ],
+                "summary": "更新WorkflowProcess",
+                "parameters": [
+                    {
+                        "description": "更新WorkflowProcess",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.WorkflowProcess"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"更新成功\"}",
                         "schema": {
                             "type": "string"
                         }
@@ -2580,6 +3043,12 @@ var doc = `{
         "config.JWT": {
             "type": "object",
             "properties": {
+                "bufferTime": {
+                    "type": "integer"
+                },
+                "expiresTime": {
+                    "type": "integer"
+                },
                 "signingKey": {
                     "type": "string"
                 }
@@ -2604,6 +3073,9 @@ var doc = `{
                 },
                 "logMode": {
                     "type": "boolean"
+                },
+                "logZap": {
+                    "type": "string"
                 },
                 "maxIdleConns": {
                     "type": "integer"
@@ -2666,45 +3138,35 @@ var doc = `{
             "type": "object",
             "properties": {
                 "captcha": {
-                    "type": "object",
                     "$ref": "#/definitions/config.Captcha"
                 },
                 "casbin": {
-                    "type": "object",
                     "$ref": "#/definitions/config.Casbin"
                 },
                 "email": {
-                    "type": "object",
                     "$ref": "#/definitions/config.Email"
                 },
                 "jwt": {
-                    "type": "object",
                     "$ref": "#/definitions/config.JWT"
                 },
                 "local": {
                     "description": "oss",
-                    "type": "object",
                     "$ref": "#/definitions/config.Local"
                 },
                 "mysql": {
                     "description": "gorm",
-                    "type": "object",
                     "$ref": "#/definitions/config.Mysql"
                 },
                 "qiniu": {
-                    "type": "object",
                     "$ref": "#/definitions/config.Qiniu"
                 },
                 "redis": {
-                    "type": "object",
                     "$ref": "#/definitions/config.Redis"
                 },
                 "system": {
-                    "type": "object",
                     "$ref": "#/definitions/config.System"
                 },
                 "zap": {
-                    "type": "object",
                     "$ref": "#/definitions/config.Zap"
                 }
             }
@@ -2761,6 +3223,38 @@ var doc = `{
                 }
             }
         },
+        "model.AutoCodeStruct": {
+            "type": "object",
+            "properties": {
+                "abbreviation": {
+                    "type": "string"
+                },
+                "autoCreateApiToSql": {
+                    "type": "boolean"
+                },
+                "autoMoveFile": {
+                    "type": "boolean"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "fields": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Field"
+                    }
+                },
+                "packageName": {
+                    "type": "string"
+                },
+                "structName": {
+                    "type": "string"
+                },
+                "tableName": {
+                    "type": "string"
+                }
+            }
+        },
         "model.ExaCustomer": {
             "type": "object",
             "properties": {
@@ -2777,7 +3271,6 @@ var doc = `{
                     "type": "integer"
                 },
                 "sysUser": {
-                    "type": "object",
                     "$ref": "#/definitions/model.SysUser"
                 },
                 "sysUserAuthorityID": {
@@ -2813,6 +3306,41 @@ var doc = `{
                     "type": "string"
                 },
                 "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Field": {
+            "type": "object",
+            "properties": {
+                "columnName": {
+                    "type": "string"
+                },
+                "comment": {
+                    "type": "string"
+                },
+                "dataType": {
+                    "type": "string"
+                },
+                "dataTypeLong": {
+                    "type": "string"
+                },
+                "dictType": {
+                    "type": "string"
+                },
+                "fieldDesc": {
+                    "type": "string"
+                },
+                "fieldJson": {
+                    "type": "string"
+                },
+                "fieldName": {
+                    "type": "string"
+                },
+                "fieldSearchType": {
+                    "type": "string"
+                },
+                "fieldType": {
                     "type": "string"
                 }
             }
@@ -3033,59 +3561,10 @@ var doc = `{
                 }
             }
         },
-        "model.SysOperationRecord": {
-            "type": "object",
-            "properties": {
-                "agent": {
-                    "type": "string"
-                },
-                "body": {
-                    "type": "string"
-                },
-                "createdAt": {
-                    "type": "string"
-                },
-                "error_message": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "ip": {
-                    "type": "string"
-                },
-                "latency": {
-                    "type": "string"
-                },
-                "method": {
-                    "type": "string"
-                },
-                "path": {
-                    "type": "string"
-                },
-                "resp": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "integer"
-                },
-                "updatedAt": {
-                    "type": "string"
-                },
-                "user": {
-                    "type": "object",
-                    "$ref": "#/definitions/model.SysUser"
-                },
-                "user_id": {
-                    "type": "integer"
-                }
-            }
-        },
         "model.SysUser": {
             "type": "object",
             "properties": {
                 "authority": {
-                    "type": "object",
                     "$ref": "#/definitions/model.SysAuthority"
                 },
                 "authorityId": {
@@ -3114,83 +3593,247 @@ var doc = `{
                 }
             }
         },
-        "model.SysWorkflow": {
-            "type": "object",
-            "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "updatedAt": {
-                    "type": "string"
-                },
-                "workflowDescription": {
-                    "description": "工作流描述",
-                    "type": "string"
-                },
-                "workflowName": {
-                    "description": "工作流英文id",
-                    "type": "string"
-                },
-                "workflowNickName": {
-                    "description": "工作流名称",
-                    "type": "string"
-                },
-                "workflowStep": {
-                    "description": "工作流步骤",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/model.SysWorkflowStepInfo"
-                    }
-                }
-            }
-        },
-        "model.SysWorkflowStepInfo": {
-            "type": "object",
-            "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "isEnd": {
-                    "description": "是否是完结流节点",
-                    "type": "boolean"
-                },
-                "isStart": {
-                    "description": "是否是开始流节点",
-                    "type": "boolean"
-                },
-                "stepAuthorityID": {
-                    "description": "操作者级别id",
-                    "type": "string"
-                },
-                "stepName": {
-                    "description": "工作流名称",
-                    "type": "string"
-                },
-                "stepNo": {
-                    "description": "步骤id （第几步）",
-                    "type": "number"
-                },
-                "updatedAt": {
-                    "type": "string"
-                },
-                "workflowID": {
-                    "description": "所属工作流ID",
-                    "type": "integer"
-                }
-            }
-        },
         "model.System": {
             "type": "object",
             "properties": {
                 "config": {
-                    "type": "object",
                     "$ref": "#/definitions/config.Server"
+                }
+            }
+        },
+        "model.WorkflowEdge": {
+            "type": "object",
+            "properties": {
+                "clazz": {
+                    "type": "string"
+                },
+                "conditionExpression": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "endPoint": {
+                    "description": "终点信息",
+                    "$ref": "#/definitions/model.WorkflowEndPoint"
+                },
+                "hideIcon": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "label": {
+                    "type": "string"
+                },
+                "reverse": {
+                    "type": "boolean"
+                },
+                "seq": {
+                    "type": "string"
+                },
+                "shape": {
+                    "type": "string"
+                },
+                "source": {
+                    "type": "string"
+                },
+                "sourceAnchor": {
+                    "type": "integer"
+                },
+                "startPoint": {
+                    "description": "起点信息",
+                    "$ref": "#/definitions/model.WorkflowStartPoint"
+                },
+                "target": {
+                    "type": "string"
+                },
+                "targetAnchor": {
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.WorkflowEndPoint": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "index": {
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "workflowEdgeID": {
+                    "type": "string"
+                },
+                "x": {
+                    "type": "number"
+                },
+                "y": {
+                    "type": "number"
+                }
+            }
+        },
+        "model.WorkflowNode": {
+            "type": "object",
+            "properties": {
+                "assignType": {
+                    "type": "string"
+                },
+                "assignValue": {
+                    "type": "string"
+                },
+                "clazz": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "cycle": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "dueDate": {
+                    "type": "string"
+                },
+                "duration": {
+                    "type": "string"
+                },
+                "hideIcon": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "label": {
+                    "type": "string"
+                },
+                "shape": {
+                    "type": "string"
+                },
+                "stateValue": {
+                    "type": "string"
+                },
+                "subject": {
+                    "type": "string"
+                },
+                "success": {
+                    "type": "boolean"
+                },
+                "to": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "view": {
+                    "type": "string"
+                },
+                "waitState": {
+                    "type": "string"
+                },
+                "workflowProcessID": {
+                    "type": "string"
+                },
+                "x": {
+                    "type": "number"
+                },
+                "y": {
+                    "type": "number"
+                }
+            }
+        },
+        "model.WorkflowProcess": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "string"
+                },
+                "clazz": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "edges": {
+                    "description": "流程链接数据",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.WorkflowEdge"
+                    }
+                },
+                "hideIcon": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "label": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "nodes": {
+                    "description": "流程节点数据",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.WorkflowNode"
+                    }
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "view": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.WorkflowStartPoint": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "index": {
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "workflowEdgeID": {
+                    "type": "string"
+                },
+                "x": {
+                    "type": "number"
+                },
+                "y": {
+                    "type": "number"
                 }
             }
         },
@@ -3263,6 +3906,14 @@ var doc = `{
             "properties": {
                 "id": {
                     "type": "number"
+                }
+            }
+        },
+        "request.GetByIdUint": {
+            "type": "object",
+            "properties": {
+                "ID": {
+                    "type": "integer"
                 }
             }
         },
@@ -3427,7 +4078,7 @@ var doc = `{
                 }
             }
         },
-        "request.SysOperationRecordSearch": {
+        "request.SysOperationRecordCreate": {
             "type": "object",
             "properties": {
                 "agent": {
@@ -3449,16 +4100,10 @@ var doc = `{
                     "type": "string"
                 },
                 "latency": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "method": {
                     "type": "string"
-                },
-                "page": {
-                    "type": "integer"
-                },
-                "pageSize": {
-                    "type": "integer"
                 },
                 "path": {
                     "type": "string"
@@ -3472,12 +4117,63 @@ var doc = `{
                 "updatedAt": {
                     "type": "string"
                 },
-                "user": {
-                    "type": "object",
-                    "$ref": "#/definitions/model.SysUser"
-                },
                 "user_id": {
                     "type": "integer"
+                }
+            }
+        },
+        "request.WorkflowProcessSearch": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "string"
+                },
+                "clazz": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "edges": {
+                    "description": "流程链接数据",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.WorkflowEdge"
+                    }
+                },
+                "hideIcon": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "label": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "nodes": {
+                    "description": "流程节点数据",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.WorkflowNode"
+                    }
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "pageSize": {
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "view": {
+                    "type": "string"
                 }
             }
         },
@@ -3485,7 +4181,6 @@ var doc = `{
             "type": "object",
             "properties": {
                 "authority": {
-                    "type": "object",
                     "$ref": "#/definitions/model.SysAuthority"
                 },
                 "oldAuthorityId": {

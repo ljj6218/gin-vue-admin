@@ -33,6 +33,10 @@ definitions:
     type: object
   config.JWT:
     properties:
+      bufferTime:
+        type: integer
+      expiresTime:
+        type: integer
       signingKey:
         type: string
     type: object
@@ -49,6 +53,8 @@ definitions:
         type: string
       logMode:
         type: boolean
+      logZap:
+        type: string
       maxIdleConns:
         type: integer
       maxOpenConns:
@@ -90,36 +96,26 @@ definitions:
     properties:
       captcha:
         $ref: '#/definitions/config.Captcha'
-        type: object
       casbin:
         $ref: '#/definitions/config.Casbin'
-        type: object
       email:
         $ref: '#/definitions/config.Email'
-        type: object
       jwt:
         $ref: '#/definitions/config.JWT'
-        type: object
       local:
         $ref: '#/definitions/config.Local'
         description: oss
-        type: object
       mysql:
         $ref: '#/definitions/config.Mysql'
         description: gorm
-        type: object
       qiniu:
         $ref: '#/definitions/config.Qiniu'
-        type: object
       redis:
         $ref: '#/definitions/config.Redis'
-        type: object
       system:
         $ref: '#/definitions/config.System'
-        type: object
       zap:
         $ref: '#/definitions/config.Zap'
-        type: object
     type: object
   config.System:
     properties:
@@ -155,6 +151,27 @@ definitions:
       stacktraceKey:
         type: string
     type: object
+  model.AutoCodeStruct:
+    properties:
+      abbreviation:
+        type: string
+      autoCreateApiToSql:
+        type: boolean
+      autoMoveFile:
+        type: boolean
+      description:
+        type: string
+      fields:
+        items:
+          $ref: '#/definitions/model.Field'
+        type: array
+      packageName:
+        type: string
+      structName:
+        type: string
+      tableName:
+        type: string
+    type: object
   model.ExaCustomer:
     properties:
       createdAt:
@@ -167,7 +184,6 @@ definitions:
         type: integer
       sysUser:
         $ref: '#/definitions/model.SysUser'
-        type: object
       sysUserAuthorityID:
         type: string
       sysUserId:
@@ -190,6 +206,29 @@ definitions:
       updatedAt:
         type: string
       url:
+        type: string
+    type: object
+  model.Field:
+    properties:
+      columnName:
+        type: string
+      comment:
+        type: string
+      dataType:
+        type: string
+      dataTypeLong:
+        type: string
+      dictType:
+        type: string
+      fieldDesc:
+        type: string
+      fieldJson:
+        type: string
+      fieldName:
+        type: string
+      fieldSearchType:
+        type: string
+      fieldType:
         type: string
     type: object
   model.SysApi:
@@ -334,43 +373,10 @@ definitions:
       value:
         type: integer
     type: object
-  model.SysOperationRecord:
-    properties:
-      agent:
-        type: string
-      body:
-        type: string
-      createdAt:
-        type: string
-      error_message:
-        type: string
-      id:
-        type: integer
-      ip:
-        type: string
-      latency:
-        type: string
-      method:
-        type: string
-      path:
-        type: string
-      resp:
-        type: string
-      status:
-        type: integer
-      updatedAt:
-        type: string
-      user:
-        $ref: '#/definitions/model.SysUser'
-        type: object
-      user_id:
-        type: integer
-    type: object
   model.SysUser:
     properties:
       authority:
         $ref: '#/definitions/model.SysAuthority'
-        type: object
       authorityId:
         type: string
       createdAt:
@@ -388,61 +394,167 @@ definitions:
       uuid:
         type: string
     type: object
-  model.SysWorkflow:
-    properties:
-      createdAt:
-        type: string
-      id:
-        type: integer
-      updatedAt:
-        type: string
-      workflowDescription:
-        description: 工作流描述
-        type: string
-      workflowName:
-        description: 工作流英文id
-        type: string
-      workflowNickName:
-        description: 工作流名称
-        type: string
-      workflowStep:
-        description: 工作流步骤
-        items:
-          $ref: '#/definitions/model.SysWorkflowStepInfo'
-        type: array
-    type: object
-  model.SysWorkflowStepInfo:
-    properties:
-      createdAt:
-        type: string
-      id:
-        type: integer
-      isEnd:
-        description: 是否是完结流节点
-        type: boolean
-      isStart:
-        description: 是否是开始流节点
-        type: boolean
-      stepAuthorityID:
-        description: 操作者级别id
-        type: string
-      stepName:
-        description: 工作流名称
-        type: string
-      stepNo:
-        description: 步骤id （第几步）
-        type: number
-      updatedAt:
-        type: string
-      workflowID:
-        description: 所属工作流ID
-        type: integer
-    type: object
   model.System:
     properties:
       config:
         $ref: '#/definitions/config.Server'
-        type: object
+    type: object
+  model.WorkflowEdge:
+    properties:
+      clazz:
+        type: string
+      conditionExpression:
+        type: string
+      createdAt:
+        type: string
+      description:
+        type: string
+      endPoint:
+        $ref: '#/definitions/model.WorkflowEndPoint'
+        description: 终点信息
+      hideIcon:
+        type: boolean
+      id:
+        type: string
+      label:
+        type: string
+      reverse:
+        type: boolean
+      seq:
+        type: string
+      shape:
+        type: string
+      source:
+        type: string
+      sourceAnchor:
+        type: integer
+      startPoint:
+        $ref: '#/definitions/model.WorkflowStartPoint'
+        description: 起点信息
+      target:
+        type: string
+      targetAnchor:
+        type: integer
+      updatedAt:
+        type: string
+    type: object
+  model.WorkflowEndPoint:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: integer
+      index:
+        type: integer
+      updatedAt:
+        type: string
+      workflowEdgeID:
+        type: string
+      x:
+        type: number
+      "y":
+        type: number
+    type: object
+  model.WorkflowNode:
+    properties:
+      assignType:
+        type: string
+      assignValue:
+        type: string
+      clazz:
+        type: string
+      content:
+        type: string
+      createdAt:
+        type: string
+      cycle:
+        type: string
+      description:
+        type: string
+      dueDate:
+        type: string
+      duration:
+        type: string
+      hideIcon:
+        type: boolean
+      id:
+        type: string
+      label:
+        type: string
+      shape:
+        type: string
+      stateValue:
+        type: string
+      subject:
+        type: string
+      success:
+        type: boolean
+      to:
+        type: string
+      type:
+        type: string
+      updatedAt:
+        type: string
+      view:
+        type: string
+      waitState:
+        type: string
+      workflowProcessID:
+        type: string
+      x:
+        type: number
+      "y":
+        type: number
+    type: object
+  model.WorkflowProcess:
+    properties:
+      category:
+        type: string
+      clazz:
+        type: string
+      createdAt:
+        type: string
+      description:
+        type: string
+      edges:
+        description: 流程链接数据
+        items:
+          $ref: '#/definitions/model.WorkflowEdge'
+        type: array
+      hideIcon:
+        type: boolean
+      id:
+        type: string
+      label:
+        type: string
+      name:
+        type: string
+      nodes:
+        description: 流程节点数据
+        items:
+          $ref: '#/definitions/model.WorkflowNode'
+        type: array
+      updatedAt:
+        type: string
+      view:
+        type: string
+    type: object
+  model.WorkflowStartPoint:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: integer
+      index:
+        type: integer
+      updatedAt:
+        type: string
+      workflowEdgeID:
+        type: string
+      x:
+        type: number
+      "y":
+        type: number
     type: object
   request.AddMenuAuthorityInfo:
     properties:
@@ -489,6 +601,11 @@ definitions:
     properties:
       id:
         type: number
+    type: object
+  request.GetByIdUint:
+    properties:
+      ID:
+        type: integer
     type: object
   request.IdsReq:
     properties:
@@ -595,7 +712,7 @@ definitions:
       updatedAt:
         type: string
     type: object
-  request.SysOperationRecordSearch:
+  request.SysOperationRecordCreate:
     properties:
       agent:
         type: string
@@ -610,13 +727,9 @@ definitions:
       ip:
         type: string
       latency:
-        type: string
+        type: integer
       method:
         type: string
-      page:
-        type: integer
-      pageSize:
-        type: integer
       path:
         type: string
       resp:
@@ -625,24 +738,56 @@ definitions:
         type: integer
       updatedAt:
         type: string
-      user:
-        $ref: '#/definitions/model.SysUser'
-        type: object
       user_id:
         type: integer
+    type: object
+  request.WorkflowProcessSearch:
+    properties:
+      category:
+        type: string
+      clazz:
+        type: string
+      createdAt:
+        type: string
+      description:
+        type: string
+      edges:
+        description: 流程链接数据
+        items:
+          $ref: '#/definitions/model.WorkflowEdge'
+        type: array
+      hideIcon:
+        type: boolean
+      id:
+        type: string
+      label:
+        type: string
+      name:
+        type: string
+      nodes:
+        description: 流程节点数据
+        items:
+          $ref: '#/definitions/model.WorkflowNode'
+        type: array
+      page:
+        type: integer
+      pageSize:
+        type: integer
+      updatedAt:
+        type: string
+      view:
+        type: string
     type: object
   response.SysAuthorityCopyResponse:
     properties:
       authority:
         $ref: '#/definitions/model.SysAuthority'
-        type: object
       oldAuthorityId:
         type: string
     type: object
 info:
   contact: {}
   description: This is a sample Server pets
-  license: {}
   title: Swagger Example API
   version: 0.0.1
 paths:
@@ -774,7 +919,7 @@ paths:
             type: string
       security:
       - ApiKeyAuth: []
-      summary: 创建基础api
+      summary: 更新基础api
       tags:
       - SysApi
   /authority/copyAuthority:
@@ -919,6 +1064,13 @@ paths:
     post:
       consumes:
       - application/json
+      parameters:
+      - description: 创建自动代码
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.AutoCodeStruct'
       produces:
       - application/json
       responses:
@@ -1581,6 +1733,12 @@ paths:
     post:
       consumes:
       - multipart/form-data
+      parameters:
+      - description: 断点续传插件版示例
+        in: formData
+        name: file
+        required: true
+        type: file
       produces:
       - application/json
       responses:
@@ -1833,7 +1991,7 @@ paths:
         name: data
         required: true
         schema:
-          $ref: '#/definitions/model.SysOperationRecord'
+          $ref: '#/definitions/request.SysOperationRecordCreate'
       produces:
       - application/json
       responses:
@@ -1856,7 +2014,7 @@ paths:
         name: data
         required: true
         schema:
-          $ref: '#/definitions/model.SysOperationRecord'
+          $ref: '#/definitions/request.GetByIdUint'
       produces:
       - application/json
       responses:
@@ -1897,12 +2055,9 @@ paths:
       consumes:
       - application/json
       parameters:
-      - description: Id
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/model.SysOperationRecord'
+      - in: query
+        name: ID
+        type: integer
       produces:
       - application/json
       responses:
@@ -1920,12 +2075,51 @@ paths:
       consumes:
       - application/json
       parameters:
-      - description: 页码, 每页大小, 搜索条件
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/request.SysOperationRecordSearch'
+      - in: query
+        name: agent
+        type: string
+      - in: query
+        name: body
+        type: string
+      - in: query
+        name: createdAt
+        type: string
+      - in: query
+        name: error_message
+        type: string
+      - in: query
+        name: id
+        type: integer
+      - in: query
+        name: ip
+        type: string
+      - in: query
+        name: latency
+        type: integer
+      - in: query
+        name: method
+        type: string
+      - in: query
+        name: page
+        type: integer
+      - in: query
+        name: pageSize
+        type: integer
+      - in: query
+        name: path
+        type: string
+      - in: query
+        name: resp
+        type: string
+      - in: query
+        name: status
+        type: integer
+      - in: query
+        name: updatedAt
+        type: string
+      - in: query
+        name: user_id
+        type: integer
       produces:
       - application/json
       responses:
@@ -2140,25 +2334,254 @@ paths:
       summary: 设置用户信息
       tags:
       - SysUser
-  /workflow/createWorkFlow:
+  /workflowProcess/completeWorkflowMove:
     post:
-      parameters:
-      - description: 注册工作流接口
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/model.SysWorkflow'
+      consumes:
+      - application/json
       produces:
       - application/json
       responses:
         "200":
-          description: '{"success":true,"data":{},"msg":"注册成功"}'
+          description: '{"success":true,"data":{},"msg":"获取成功"}'
           schema:
             type: string
-      summary: 注册工作流
+      security:
+      - ApiKeyAuth: []
+      summary: 提交工作流
       tags:
-      - workflow
+      - WorkflowProcess
+  /workflowProcess/createWorkflowProcess:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 创建WorkflowProcess
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.WorkflowProcess'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"获取成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 创建WorkflowProcess
+      tags:
+      - WorkflowProcess
+  /workflowProcess/deleteWorkflowProcess:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 删除WorkflowProcess
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.WorkflowProcess'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"删除成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 删除WorkflowProcess
+      tags:
+      - WorkflowProcess
+  /workflowProcess/deleteWorkflowProcessByIds:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 批量删除WorkflowProcess
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.IdsReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"删除成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 批量删除WorkflowProcess
+      tags:
+      - WorkflowProcess
+  /workflowProcess/findWorkflowProcess:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 用id查询WorkflowProcess
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.WorkflowProcess'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"查询成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 用id查询WorkflowProcess
+      tags:
+      - WorkflowProcess
+  /workflowProcess/findWorkflowStep:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 用id查询WorkflowProcess
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.WorkflowProcess'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"查询成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 用id查询工作流步骤
+      tags:
+      - WorkflowProcess
+  /workflowProcess/getMyNeed:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"获取成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 我的待办
+      tags:
+      - WorkflowProcess
+  /workflowProcess/getMyStated:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"获取成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 我发起的工作流
+      tags:
+      - WorkflowProcess
+  /workflowProcess/getWorkflowMoveByID:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 根据id获取当前节点详情和过往
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.GetById'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"获取成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 根据id获取当前节点详情和历史
+      tags:
+      - WorkflowProcess
+  /workflowProcess/getWorkflowProcessList:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 分页获取WorkflowProcess列表
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.WorkflowProcessSearch'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"获取成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 分页获取WorkflowProcess列表
+      tags:
+      - WorkflowProcess
+  /workflowProcess/startWorkflow:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"获取成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 开启工作流
+      tags:
+      - WorkflowProcess
+  /workflowProcess/updateWorkflowProcess:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 更新WorkflowProcess
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.WorkflowProcess'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"更新成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 更新WorkflowProcess
+      tags:
+      - WorkflowProcess
 securityDefinitions:
   ApiKeyAuth:
     in: header
