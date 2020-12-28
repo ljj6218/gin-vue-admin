@@ -16,7 +16,7 @@ import (
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body model.SysOperationRecord true "创建SysOperationRecord"
+// @Param data body request.SysOperationRecordCreate true "创建SysOperationRecord"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /sysOperationRecord/createSysOperationRecord [post]
 func CreateSysOperationRecord(c *gin.Context) {
@@ -35,7 +35,7 @@ func CreateSysOperationRecord(c *gin.Context) {
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body model.SysOperationRecord true "SysOperationRecord模型"
+// @Param data body request.GetByIdUint true "SysOperationRecord模型"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"删除成功"}"
 // @Router /sysOperationRecord/deleteSysOperationRecord [delete]
 func DeleteSysOperationRecord(c *gin.Context) {
@@ -73,11 +73,11 @@ func DeleteSysOperationRecordByIds(c *gin.Context) {
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body model.SysOperationRecord true "Id"
+// @Param data query request.GetByIdUint false "编号"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"查询成功"}"
 // @Router /sysOperationRecord/findSysOperationRecord [get]
 func FindSysOperationRecord(c *gin.Context) {
-	var sysOperationRecord model.SysOperationRecord
+	var sysOperationRecord request.GetByIdUint
 	_ = c.ShouldBindQuery(&sysOperationRecord)
 	if err := utils.Verify(sysOperationRecord, utils.IdVerify); err != nil {
 		response.FailWithMessage(err.Error(), c)
@@ -96,7 +96,7 @@ func FindSysOperationRecord(c *gin.Context) {
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body request.SysOperationRecordSearch true "页码, 每页大小, 搜索条件"
+// @Param data query request.SysOperationRecordSearch true "页码, 每页大小, 搜索条件"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /sysOperationRecord/getSysOperationRecordList [get]
 func GetSysOperationRecordList(c *gin.Context) {

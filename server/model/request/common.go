@@ -11,6 +11,11 @@ type GetById struct {
 	Id float64 `json:"id" form:"id"`
 }
 
+// Find by id structure
+type GetByIdUint struct {
+	Id uint `json:"ID" form:"ID"`
+}
+
 type IdsReq struct {
 	Ids []int `json:"ids" form:"ids"`
 }
